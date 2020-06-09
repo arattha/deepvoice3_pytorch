@@ -129,7 +129,7 @@ python train.py --preset=presets/deepvoice3_ljspeech.json --data-root=./data/ljs
 - LJSpeech (en): https://keithito.com/LJ-Speech-Dataset/
 - VCTK (en): http://homepages.inf.ed.ac.uk/jyamagis/page3/page58/page58.html
 - JSUT (jp): https://sites.google.com/site/shinnosuketakamichi/publication/jsut
-- NIKL (ko) (**Need korean cellphone number to access it**): http://www.korean.go.kr/front/board/boardStandardView.do?board_id=4&mn_id=17&b_seq=464
+- NIKL (ko) (**Need korean cellphone number to access it**): http://www.korean.go.kr/front/board/boardStandardView.do?board_id=4&mn_id=17&b_seq=464 --> 930 문장으로 나뉜 말뭉치, 구어체가 아니므로 자연스러운 학습에는 한계가 있습니다.
 
 ### 1. Preprocessing
 
@@ -216,6 +216,10 @@ Model checkpoints (.pth) and alignments (.png) are saved in `./checkpoints` dire
 
 Pleae check [this](https://github.com/homink/deepvoice3_pytorch/blob/master/nikl_preprocess/README.md) in advance and follow the commands below.
 
+NIKL 단일 학습에 경우 speaker.sid 파일에서 학습 대상을 수정 가능함.
+NIKL corpus는 파일이름이나 음성 파일에 무의미한 공백이 있어 위 링크의 코드를 사용하면 일부 수정이 가능함.
+다만 무의미한 공백을 자르는 코드에 경우 몇몇 파일을 과도하게 잘라내어 문제가 생김. 파일명 수정만 추천함.
+
 ```
 python preprocess.py nikl_s ${your_nikl_root_path} data/nikl_s --preset=presets/deepvoice3_nikls.json
 
@@ -237,6 +241,7 @@ Given a list of text, `synthesis.py` synthesize audio signals from trained model
 ```
 python synthesis.py ${checkpoint_path} ${text_list.txt} ${output_dir} --preset=<json>
 ```
+NIKL 학습은 문장이 적어 예측값과 비슷한 것엔 대응이 잘되지만 구어체는 표현이 힘들어 보임.
 
 Example test_list.txt:
 
@@ -281,6 +286,8 @@ python train.py --data-root=./data/vctk --checkpoint-dir=checkpoints_vctk \
 This may improve training speed a bit.
 
 #### NIKL
+
+NIKL 멀티 학습에 경우 GCP에서 학습하기에는 꽤 큰 용량을 요구한다. 충분한 공간을 확보해야함.
 
 You will be able to obtain cleaned-up audio samples in ../nikl_preprocoess. Details are found in [here](https://github.com/homink/speech.ko).
 
